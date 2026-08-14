@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: aws-stepfunctions-fintech-transfer
+  description: >
+    Payment transfer saga on a Step Functions Standard Workflow (4 Lambdas,
+    CompensateReleaseFunds). DynamoDB single-table design, idempotency via
+    conditional PutItem + TTL, least-privilege IAM per Lambda.
+  annotations:
+    github.com/project-slug: bahasaki/aws-stepfunctions-fintech-transfer
+  tags:
+    - step-functions
+    - lambda
+    - dynamodb
+    - saga-pattern
+spec:
+  type: service
+  lifecycle: production
+  owner: bahasaki
+  system: fintech-portfolio

@@ -1,0 +1,34 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: eks-fintech-platform
+  description: >
+    Three FastAPI microservices on EKS with ArgoCD GitOps, HPA, Pod
+    Anti-Affinity, NGINX Ingress, and a full observability stack
+    (kube-prometheus-stack, Grafana, Alertmanager).
+  annotations:
+    github.com/project-slug: bahasaki/eks-fintech-platform
+  tags:
+    - eks
+    - kubernetes
+    - argocd
+    - gitops
+    - observability
+spec:
+  owner: bahasaki
+  domain: fintech-portfolio
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: eks-fintech-cluster
+  description: EKS cluster hosting the fintech microservices platform
+  tags:
+    - eks
+    - kubernetes
+spec:
+  type: kubernetes-cluster
+  owner: bahasaki
+  system: eks-fintech-platform
+  dependsOn:
+    - component:terraform-scripts

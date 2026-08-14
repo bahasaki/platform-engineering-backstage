@@ -1,0 +1,113 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: fastapi-service-eks
+  title: New FastAPI Service (EKS + GitOps)
+  description: >
+    Scaffolds a new FastAPI microservice with Docker, GitHub Actions CI/CD
+    that builds and pushes to ECR, a Kubernetes deployment manifest, and an
+    ArgoCD Application manifest for automatic sync onto the shared EKS cluster.
+  tags:
+    - fastapi
+    - eks
+    - gitops
+    - recommended
+spec:
+  owner: bahasaki
+  type: service
+
+  parameters:
+    - title: Service details
+      required:
+        - name
+        - description
+      properties:
+        name:
+          title: Service name
+          type: string
+          description: Unique name, used as repo name, ECR repo name, and k8s app label
+          pattern: '^[a-z][a-z0-9-]*$'
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: What does this service do?
+        owner:
+          title: Owner
+          type: string
+          description: Owning user or group in the catalog
+          default: bahasaki
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: [User, Group]
+
+    - title: AWS / deployment target
+      required:
+        - awsRegion
+        - ecrRepositoryUri
+        - namespace
+      properties:
+        awsRegion:
+          title: AWS region
+          type: string
+          default: us-east-1
+        ecrRepositoryUri:
+          title: ECR repository URI
+          type: string
+          description: e.g. 774493573578.dkr.ecr.us-east-1.amazonaws.com/<service-name>
+        namespace:
+          title: Kubernetes namespace
+          type: string
+          default: default
+
+    - title: Repository location
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: fetch-base
+      name: Fetch skeleton
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          awsRegion: ${{ parameters.awsRegion }}
+          ecrRepositoryUri: ${{ parameters.ecrRepositoryUri }}
+          namespace: ${{ parameters.namespace }}
+          destination: ${{ parameters.repoUrl | parseRepoUrl }}
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts: ['github.com']
+        description: ${{ parameters.description }}
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+
+    - id: register
+      name: Register in the catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps['publish'].output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register'].output.entityRef }}

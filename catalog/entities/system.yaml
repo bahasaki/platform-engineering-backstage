@@ -1,0 +1,23 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: fintech-portfolio
+  description: >
+    Baha's AWS/DevOps portfolio - a set of independently deployed fintech-style
+    services demonstrating IaC, containers, serverless, GitOps, and observability
+    patterns across multiple AWS compute models.
+  tags:
+    - portfolio
+    - fintech
+    - aws
+spec:
+  owner: bahasaki
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: bahasaki
+  description: Portfolio owner
+spec:
+  type: team
+  children: []

@@ -1,0 +1,23 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: wordpress-javari
+  description: >
+    Production-grade WordPress on EC2 (javari.cc) with CloudFront, HTTPS,
+    SSM Parameter Store, CloudWatch monitoring, and fail2ban hardening.
+  annotations:
+    github.com/project-slug: bahasaki/wordpress-ec2
+  links:
+    - url: https://javari.cc
+      title: Live site
+  tags:
+    - ec2
+    - wordpress
+    - cloudfront
+spec:
+  type: website
+  lifecycle: production
+  owner: bahasaki
+  system: fintech-portfolio
+  dependsOn:
+    - component:terraform-scripts

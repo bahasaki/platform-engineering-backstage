@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: terraform-scripts
+  description: >
+    Modular IaC library (VPC, EC2, ALB, ASG) reused across dev/staging/prod
+    environments. Foundational module set consumed by other portfolio projects.
+  annotations:
+    github.com/project-slug: bahasaki/Terraform-Scripts
+  tags:
+    - terraform
+    - iac
+    - aws
+spec:
+  type: library
+  lifecycle: production
+  owner: bahasaki
+  system: fintech-portfolio

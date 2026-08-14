@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: aws-event-driven-orders
+  description: >
+    Event-driven order processing: producer Lambda -> SNS fan-out -> two SQS
+    queues each with a DLQ -> consumer Lambdas -> CloudWatch Alarms.
+    Infrastructure left live on the permanent free tier.
+  annotations:
+    github.com/project-slug: bahasaki/aws-event-driven-orders
+  tags:
+    - lambda
+    - sns
+    - sqs
+    - event-driven
+spec:
+  type: service
+  lifecycle: production
+  owner: bahasaki
+  system: fintech-portfolio

@@ -1,0 +1,22 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: aws-rds-fintech-ledger
+  description: >
+    FastAPI double-entry ledger on RDS PostgreSQL. Three-tier VPC, SG chaining,
+    SSM Session Manager, SSM Parameter Store SecureString, Alembic migrations.
+    Full backup/restore DR drill executed and documented.
+  annotations:
+    github.com/project-slug: bahasaki/aws-rds-fintech-ledger
+  tags:
+    - fastapi
+    - rds
+    - postgresql
+    - disaster-recovery
+spec:
+  type: service
+  lifecycle: production
+  owner: bahasaki
+  system: fintech-portfolio
+  dependsOn:
+    - component:terraform-scripts

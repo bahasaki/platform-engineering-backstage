@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: aws-ecs-url-shortener
+  description: >
+    FastAPI URL shortener deployed via Docker + ECR + ECS Fargate behind an ALB,
+    backed by DynamoDB, with GitHub Actions CI/CD.
+  annotations:
+    github.com/project-slug: bahasaki/aws-ecs-url-shortener
+  tags:
+    - fastapi
+    - ecs-fargate
+    - dynamodb
+    - ci-cd
+spec:
+  type: service
+  lifecycle: production
+  owner: bahasaki
+  system: fintech-portfolio
+  dependsOn:
+    - component:terraform-scripts
