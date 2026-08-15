@@ -19,5 +19,3 @@ spec:
   lifecycle: production
   owner: bahasaki
   system: fintech-portfolio
-  dependsOn:
-    - component:terraform-scripts
