@@ -5,8 +5,8 @@ on:
     branches: [main]
 
 env:
-  AWS_REGION: ${{ "${{" }} values.awsRegion {{ "}}" }}
-  ECR_REPOSITORY_URI: ${{ "${{" }} values.ecrRepositoryUri {{ "}}" }}
+  AWS_REGION: ${{ values.awsRegion }}
+  ECR_REPOSITORY_URI: ${{ values.ecrRepositoryUri }}
 
 jobs:
   build-and-push:
@@ -22,8 +22,10 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ "${{" }} secrets.AWS_ROLE_ARN {{ "}}" }}
-          aws-region: ${{ "${{" }} env.AWS_REGION {{ "}}" }}
+{% raw %}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+{% endraw %}
 
       - name: Login to Amazon ECR
         id: ecr-login
@@ -32,8 +34,10 @@ jobs:
       - name: Build, tag, and push image
         id: build-image
         env:
-          ECR_REGISTRY: ${{ "${{" }} steps.ecr-login.outputs.registry {{ "}}" }}
-          IMAGE_TAG: ${{ "${{" }} github.sha {{ "}}" }}
+{% raw %}
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+{% endraw %}
         run: |
           docker build -t $ECR_REPOSITORY_URI:$IMAGE_TAG .
           docker push $ECR_REPOSITORY_URI:$IMAGE_TAG
@@ -41,7 +45,9 @@ jobs:
 
       - name: Update k8s manifest with new image tag
         env:
-          IMAGE: ${{ "${{" }} steps.build-image.outputs.image {{ "}}" }}
+{% raw %}
+          IMAGE: ${{ steps.build-image.outputs.image }}
+{% endraw %}
         run: |
           sed -i "s|image:.*|image: ${IMAGE}|" k8s/deployment.yaml
 
@@ -50,5 +56,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add k8s/deployment.yaml
-          git diff --staged --quiet || git commit -m "chore: update image tag to ${{ "${{" }} github.sha {{ "}}" }}"
+{% raw %}
+          git diff --staged --quiet || git commit -m "chore: update image tag to ${{ github.sha }}"
+{% endraw %}
           git push
