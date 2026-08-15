@@ -27,10 +27,15 @@ curl /healthz -> {"status":"ok","service":"hello-fastapi"}   VERIFIED LIVE
 
 Every step above was independently confirmed against a real, running test
 service (`hello-fastapi`) — not just "the pipeline looks correct on paper."
-See `docs/incidents/` for the seven real issues hit and fixed along the way.
+See [`docs/incidents/`](docs/incidents/) for the seven real issues hit and
+fixed along the way.
 
-See `docs/adrs/0001-scaffolder-gitops-over-techdocs-first.md` for why this
-ordering was chosen over a Catalog/TechDocs-first approach.
+**Key patterns demonstrated:** Backstage Software Templates (Scaffolder),
+GitOps with ArgoCD, GitHub OIDC federation (no long-lived AWS credentials),
+Terraform, EKS, least-privilege IAM, Software Catalog modeling.
+
+See [ADR 0001](docs/adrs/0001-scaffolder-gitops-over-techdocs-first.md) for
+why this ordering was chosen over a Catalog/TechDocs-first approach.
 
 ## What's in this repo
 
@@ -50,12 +55,20 @@ ordering was chosen over a Catalog/TechDocs-first approach.
   see ADR 0002), used to validate the ArgoCD/EKS leg of the pipeline. This
   cluster is **not left running** — see "Reproducing this end-to-end" below.
 - `app-config.yaml` — wired to load the catalog entities and the template.
-- `docs/adrs/` — three ADRs documenting key decisions (Scaffolder+GitOps
-  priority, no NAT Gateway for the demo cluster, why the EKS Terraform lives
-  in this repo rather than standalone).
-- `docs/incidents/` — seven real incidents hit while building this,
+- `docs/adrs/` — three ADRs documenting key decisions:
+  - [0001](docs/adrs/0001-scaffolder-gitops-over-techdocs-first.md) — Scaffolder+GitOps prioritized over TechDocs-first
+  - [0002](docs/adrs/0002-no-nat-gateway-demo-eks-cluster.md) — no NAT Gateway for the demo EKS cluster
+  - [0003](docs/adrs/0003-eks-infra-lives-in-project-repo.md) — why the EKS Terraform lives in this repo rather than standalone
+- `docs/incidents/` — seven real incidents hit while building this, each
   documented Symptoms -> Investigation -> Root Cause -> Fix -> Verification
-  -> Prevention -> Lessons Learned.
+  -> Prevention -> Lessons Learned:
+  - [001](docs/incidents/001-scaffolder-allowedhosts-schema-error.md) — Scaffolder `allowedHosts` schema validation error
+  - [002](docs/incidents/002-github-token-duplicated-prefix.md) — GitHub token duplicated prefix
+  - [003](docs/incidents/003-catalog-rules-missing-group-kind.md) — catalog.rules missing the `Group` kind
+  - [004](docs/incidents/004-nunjucks-github-actions-delimiter-collision.md) — Nunjucks/GitHub Actions `${{ }}` delimiter collision
+  - [005](docs/incidents/005-github-oidc-immutable-subject-claim.md) — GitHub OIDC immutable subject claim format
+  - [006](docs/incidents/006-eks-node-group-free-tier-instance-type.md) — EKS node group blocked by Free Tier instance type restriction
+  - [007](docs/incidents/007-argocd-private-repo-credentials.md) — ArgoCD private repo credentials
 
 ## One-time setup (already done once, documented here for reproducing)
 
